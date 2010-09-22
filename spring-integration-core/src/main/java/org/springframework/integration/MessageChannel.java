@@ -20,8 +20,9 @@ package org.springframework.integration;
  * Base channel interface defining common behavior for sending messages.
  * 
  * @author Mark Fisher
+ * @author Iwein Fuld
  */
-public interface MessageChannel {
+public interface MessageChannel<T> {
 
 	/**
 	 * Send a {@link Message} to this channel. May throw a RuntimeException for
@@ -36,7 +37,7 @@ public interface MessageChannel {
 	 * 
 	 * @return whether the Message has been sent successfully
 	 */
-	boolean send(Message<?> message);
+	boolean send(Message<? extends T> message);
 
 	/**
 	 * Send a message, blocking until either the message is accepted or the
@@ -49,6 +50,6 @@ public interface MessageChannel {
 	 * <code>false</false> if the specified timeout period elapses or
 	 * the send is interrupted
 	 */
-	boolean send(Message<?> message, long timeout);
+	boolean send(Message<? extends T> message, long timeout);
 
 }

@@ -37,7 +37,7 @@ public class HeaderFilter implements Transformer {
 	}
 
 
-	public Message<?> transform(Message<?> message) {
+	public Message transform(Message message) {
 		MessageBuilder<?> builder = MessageBuilder.fromMessage(message);
 		for (String headerName : headersToRemove) {
 			builder.removeHeader(headerName);

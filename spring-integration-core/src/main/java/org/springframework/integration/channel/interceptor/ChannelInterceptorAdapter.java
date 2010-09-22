@@ -23,23 +23,23 @@ import org.springframework.integration.channel.ChannelInterceptor;
 /**
  * A {@link ChannelInterceptor} with no-op method implementations so that
  * subclasses do not have to implement all of the interface's methods.
- * 
+ *
  * @author Mark Fisher
  */
 public class ChannelInterceptorAdapter implements ChannelInterceptor {
 
-	public Message<?> preSend(Message<?> message, MessageChannel channel) {
+	public <T> Message<T> preSend(Message<T> message, MessageChannel<T> channel) {
 		return message;
 	}
 
-	public void postSend(Message<?> message, MessageChannel channel, boolean sent) {
+	public void postSend(Message message, MessageChannel channel, boolean sent) {
 	}
 
 	public boolean preReceive(MessageChannel channel) {
 		return true;
 	}
 
-	public Message<?> postReceive(Message<?> message, MessageChannel channel) {
+	public <T> Message<T> postReceive(Message<T> message, MessageChannel<T> channel) {
 		return message;
 	}
 

@@ -16,18 +16,10 @@
 
 package org.springframework.integration.config;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
-
-import java.util.List;
-
 import org.hamcrest.Factory;
 import org.hamcrest.Matcher;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
 import org.springframework.beans.DirectFieldAccessor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -42,6 +34,10 @@ import org.springframework.integration.support.MessageBuilder;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.util.StringUtils;
+
+import java.util.List;
+
+import static org.junit.Assert.*;
 
 /**
  * @author Mark Fisher
@@ -98,7 +94,7 @@ public class ChainParserTests {
 	public static Message<?> successMessage = MessageBuilder.withPayload("success").build();
 
 	@Factory
-	public static Matcher<Message<?>> sameExceptImmutableHeaders(Message<?> expected) {
+	public static Matcher<Message> sameExceptImmutableHeaders(Message<?> expected) {
 		return new MessageMatcher(expected);
 	}
 

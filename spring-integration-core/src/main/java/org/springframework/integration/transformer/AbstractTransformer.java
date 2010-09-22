@@ -24,17 +24,17 @@ import org.springframework.integration.support.MessageBuilder;
  * 
  * @author Mark Fisher
  */
-public abstract class AbstractTransformer implements Transformer {
+public abstract class AbstractTransformer<OUT> implements Transformer<OUT> {
 
 	@SuppressWarnings("unchecked")
-	public final Message<?> transform(Message<?> message) {
+	public final<IN> Message<OUT> transform(Message<IN> message) {
 		try {
 			Object result = this.doTransform(message);
 			if (result == null) {
 				return null;
 			}
-			return (result instanceof Message) ? (Message<?>) result
-					: MessageBuilder.withPayload(result).copyHeaders(message.getHeaders()).build();
+			return (result instanceof Message) ? (Message<OUT>) result
+					: MessageBuilder.withPayload((OUT)result).copyHeaders(message.getHeaders()).build();
 		}
 		catch (MessageTransformationException e) {
 			throw e;
@@ -50,6 +50,6 @@ public abstract class AbstractTransformer implements Transformer {
 	 * result. Otherwise, any non-null return value will be used as the payload
 	 * of the result Message.
 	 */
-	protected abstract Object doTransform(Message<?> message) throws Exception;
+	protected abstract<IN> Object doTransform(Message<IN> message) throws Exception;
 
 }

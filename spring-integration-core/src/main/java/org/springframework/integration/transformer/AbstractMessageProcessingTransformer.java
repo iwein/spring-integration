@@ -52,7 +52,7 @@ public abstract class AbstractMessageProcessingTransformer implements Transforme
 		}
 	}
 
-	public final Message<?> transform(Message<?> message) {
+	public final Message transform(Message message) {
 		Object result = this.messageProcessor.processMessage(message);
 		if (result == null) {
 			return null;

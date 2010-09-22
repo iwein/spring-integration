@@ -16,19 +16,19 @@
 
 package org.springframework.integration.channel.interceptor;
 
-import java.util.Arrays;
-import java.util.List;
-
 import org.springframework.integration.Message;
 import org.springframework.integration.MessageChannel;
 import org.springframework.integration.MessageDeliveryException;
 import org.springframework.integration.core.MessageSelector;
 
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * A {@link org.springframework.integration.channel.ChannelInterceptor} that
  * delegates to a list of {@link MessageSelector MessageSelectors} to decide
  * whether a {@link Message} should be accepted on the {@link MessageChannel}.
- * 
+ *
  * @author Mark Fisher
  */
 public class MessageSelectingInterceptor extends ChannelInterceptorAdapter {
@@ -42,7 +42,7 @@ public class MessageSelectingInterceptor extends ChannelInterceptorAdapter {
 
 
 	@Override
-	public Message<?> preSend(Message<?> message, MessageChannel channel) {
+	public <T> Message<T> preSend(Message<T> message, MessageChannel<T> channel) {
 		for (MessageSelector selector : this.selectors) {
 			if (!selector.accept(message)) {
 				throw new MessageDeliveryException(message,

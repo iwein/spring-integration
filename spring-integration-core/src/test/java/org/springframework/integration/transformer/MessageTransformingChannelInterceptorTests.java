@@ -16,16 +16,13 @@
 
 package org.springframework.integration.transformer;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 import org.junit.Before;
 import org.junit.Test;
-
 import org.springframework.integration.Message;
 import org.springframework.integration.channel.QueueChannel;
 import org.springframework.integration.message.GenericMessage;
+
+import static org.junit.Assert.*;
 
 /**
  * @author Jonas Partner
@@ -78,7 +75,7 @@ public class MessageTransformingChannelInterceptorTests {
 
 		int invokedCount = 0;
 
-		public Message<?> transform(Message<?> message) {
+		public Message transform(Message message) {
 			invoked = true;
 			invokedCount++;
 			return message;

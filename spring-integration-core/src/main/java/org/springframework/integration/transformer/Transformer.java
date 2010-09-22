@@ -19,12 +19,20 @@ package org.springframework.integration.transformer;
 import org.springframework.integration.Message;
 
 /**
- * Strategy interface for transforming a {@link Message}.
- * 
+ * Strategy interface for transforming a {@link Message}. The transformer can optionally be parametrized with the type
+ * of the payload outgoing messages, in case the transformer doesn't operate on the payloads these
+ * parameters should be ignored.
+ *
  * @author Mark Fisher
+ * @author Iwein Fuld
+ * @param <OUT> the type of the payloads of outgoing messages
  */
-public interface Transformer {
+public interface Transformer<OUT> {
 
-	Message<?> transform(Message<?> message);
+	/**
+	 * Transform given message and return the result of the transformation.
+	 * @param <IN> optional, the type of the payloads of incoming message
+	 */
+	<IN> Message<OUT> transform(Message<IN> message);
 
 }

@@ -16,12 +16,12 @@
 
 package org.springframework.integration.transformer;
 
-import java.util.UUID;
-
 import org.springframework.integration.Message;
 import org.springframework.integration.store.MessageStore;
 import org.springframework.integration.support.MessageBuilder;
 import org.springframework.util.Assert;
+
+import java.util.UUID;
 
 /**
  * Transformer that accepts a Message whose payload is a UUID and retrieves the Message associated
@@ -46,7 +46,7 @@ public class ClaimCheckOutTransformer extends AbstractTransformer {
 
 
 	@Override
-	protected Object doTransform(Message<?> message) throws Exception {
+	protected Object doTransform(Message message) throws Exception {
 		Assert.notNull(message, "message must not be null");
 		Assert.isTrue(message.getPayload() instanceof UUID, "payload must be a UUID");
 		UUID id = (UUID) message.getPayload();

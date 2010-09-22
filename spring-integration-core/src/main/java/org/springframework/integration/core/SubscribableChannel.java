@@ -24,8 +24,9 @@ import org.springframework.integration.MessageChannel;
  * will be invoked when a Message is available.
  * 
  * @author Mark Fisher
+ * @author Iwein Fuld
  */
-public interface SubscribableChannel extends MessageChannel {
+public interface SubscribableChannel<T> extends MessageChannel<T> {
 
 	/**
 	 * Register a {@link MessageHandler} as a subscriber to this channel.

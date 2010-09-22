@@ -16,9 +16,6 @@
 
 package org.springframework.integration.handler;
 
-import java.util.HashSet;
-import java.util.List;
-
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.core.Ordered;
 import org.springframework.integration.Message;
@@ -30,6 +27,9 @@ import org.springframework.integration.filter.MessageFilter;
 import org.springframework.integration.support.channel.BeanFactoryChannelResolver;
 import org.springframework.integration.support.channel.ChannelResolver;
 import org.springframework.util.Assert;
+
+import java.util.HashSet;
+import java.util.List;
 
 /**
  * A composite {@link MessageHandler} implementation that invokes a chain of
@@ -143,10 +143,10 @@ public class MessageHandlerChain extends AbstractMessageHandler implements Messa
 						"the last one in the chain must implement the MessageProducer interface.");
 				final MessageHandler nextHandler = handlers.get(i + 1);
 				final MessageChannel nextChannel = new MessageChannel() {
-					public boolean send(Message<?> message, long timeout) {
+					public boolean send(Message message, long timeout) {
 						return this.send(message);
 					}
-					public boolean send(Message<?> message) {
+					public boolean send(Message message) {
 						nextHandler.handleMessage(message);
 						return true;
 					}
@@ -168,11 +168,11 @@ public class MessageHandlerChain extends AbstractMessageHandler implements Messa
 
 	private class ReplyForwardingMessageChannel implements MessageChannel {
 
-		public boolean send(Message<?> message) {
+		public boolean send(Message message) {
 			return this.send(message, -1);
 		}
 
-		public boolean send(Message<?> message, long timeout) {
+		public boolean send(Message message, long timeout) {
 			timeout = (MessageHandlerChain.this.sendTimeout != null)
 					? MessageHandlerChain.this.sendTimeout : timeout;
 			if (MessageHandlerChain.this.outputChannel != null) {

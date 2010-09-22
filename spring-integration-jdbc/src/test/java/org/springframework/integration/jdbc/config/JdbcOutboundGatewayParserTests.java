@@ -1,13 +1,5 @@
 package org.springframework.integration.jdbc.config;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
-import java.util.Collections;
-import java.util.Map;
-
-import javax.sql.DataSource;
-
 import org.junit.After;
 import org.junit.Test;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -19,11 +11,18 @@ import org.springframework.integration.core.PollableChannel;
 import org.springframework.integration.support.MessageBuilder;
 import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
 
+import javax.sql.DataSource;
+import java.util.Collections;
+import java.util.Map;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
 public class JdbcOutboundGatewayParserTests {
 
 	private SimpleJdbcTemplate jdbcTemplate;
 
-	private MessageChannel channel;
+	private MessageChannel<Map<String, String>> channel;
 
 	private ConfigurableApplicationContext context;
 
@@ -32,7 +31,7 @@ public class JdbcOutboundGatewayParserTests {
 	@Test
 	public void testMapPayloadMapReply() {
 		setUp("handlingMapPayloadJdbcOutboundGatewayTest.xml", getClass());
-		Message<?> message = MessageBuilder.withPayload(Collections.singletonMap("foo", "bar")).build();
+		Message<Map<String, String>> message = MessageBuilder.withPayload(Collections.singletonMap("foo", "bar")).build();
 		channel.send(message);
 		Map<String, Object> map = this.jdbcTemplate.queryForMap("SELECT * from FOOS");
 		assertEquals("Wrong id", message.getHeaders().getId().toString(), map.get("ID"));
@@ -47,7 +46,7 @@ public class JdbcOutboundGatewayParserTests {
 	@Test
 	public void testKeyGeneration() {
 		setUp("handlingKeyGenerationJdbcOutboundGatewayTest.xml", getClass());
-		Message<?> message = MessageBuilder.withPayload(Collections.singletonMap("foo", "bar")).build();
+		Message<Map<String, String>> message = MessageBuilder.withPayload(Collections.singletonMap("foo", "bar")).build();
 		channel.send(message);
 		Message<?> reply = messagingTemplate.receive();
 		assertNotNull(reply);
@@ -63,7 +62,7 @@ public class JdbcOutboundGatewayParserTests {
 	@Test
 	public void testCountUpdates() {
 		setUp("handlingCountUpdatesJdbcOutboundGatewayTest.xml", getClass());
-		Message<?> message = MessageBuilder.withPayload(Collections.singletonMap("foo", "bar")).build();
+		Message<Map<String, String>> message = MessageBuilder.withPayload(Collections.singletonMap("foo", "bar")).build();
 		channel.send(message);
 		Message<?> reply = messagingTemplate.receive();
 		assertNotNull(reply);
@@ -85,10 +84,11 @@ public class JdbcOutboundGatewayParserTests {
 		this.messagingTemplate.setReceiveTimeout(500);
 	}
 
+	@SuppressWarnings("unchecked")
 	public void setUp(String name, Class<?> cls) {
 		context = new ClassPathXmlApplicationContext(name, cls);
-		jdbcTemplate = new SimpleJdbcTemplate(this.context.getBean("dataSource", DataSource.class));
 		channel = this.context.getBean("target", MessageChannel.class);
+		jdbcTemplate = new SimpleJdbcTemplate(this.context.getBean("dataSource", DataSource.class));
 		setupMessagingTemplate();
 	}
 

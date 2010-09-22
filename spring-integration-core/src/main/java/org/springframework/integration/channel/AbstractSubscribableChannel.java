@@ -29,7 +29,7 @@ import org.springframework.util.Assert;
  * 
  * @author Mark Fisher
  */
-public abstract class AbstractSubscribableChannel extends AbstractMessageChannel implements SubscribableChannel {
+public abstract class AbstractSubscribableChannel<T> extends AbstractMessageChannel<T> implements SubscribableChannel<T> {
 
 	public boolean subscribe(MessageHandler handler) {
 		return this.getRequiredDispatcher().addHandler(handler);
@@ -40,7 +40,7 @@ public abstract class AbstractSubscribableChannel extends AbstractMessageChannel
 	}
 
 	@Override
-	protected boolean doSend(Message<?> message, long timeout) {
+	protected boolean doSend(Message<? extends T> message, long timeout) {
 		return this.getRequiredDispatcher().dispatch(message);
 	}
 

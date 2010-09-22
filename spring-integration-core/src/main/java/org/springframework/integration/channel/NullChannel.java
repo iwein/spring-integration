@@ -30,30 +30,29 @@ import org.springframework.integration.core.PollableChannel;
  * 
  * @author Mark Fisher
  */
-public class NullChannel implements PollableChannel {
+public  class NullChannel<T> implements PollableChannel<T> {
 
 	private final Log logger = LogFactory.getLog(this.getClass());
 
-
-	public boolean send(Message<?> message) {
+	public boolean send(Message<? extends T> message) {
 		if (logger.isDebugEnabled()) {
 			logger.debug("message sent to null channel: " + message);
 		}
 		return true;
 	}
 
-	public boolean send(Message<?> message, long timeout) {
+	public boolean send(Message<? extends T> message, long timeout) {
 		return this.send(message);
 	}
 
-	public Message<?> receive() {
+	public Message<T> receive() {
 		if (logger.isDebugEnabled()) {
 			logger.debug("receive called on null channel");
 		}		
 		return null;
 	}
 
-	public Message<?> receive(long timeout) {
+	public Message<T> receive(long timeout) {
 		return this.receive();
 	}
 

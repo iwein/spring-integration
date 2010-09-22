@@ -25,6 +25,7 @@ import org.springframework.integration.MessageChannel;
  * {@link MessageChannel}.
  * 
  * @author Mark Fisher
+ * @author Iwein Fuld
  */
 public interface ChannelInterceptor {
 
@@ -34,7 +35,7 @@ public interface ChannelInterceptor {
 	 * If this method returns <code>null</code>, then the actual
 	 * send invocation will not occur.
 	 */
-	Message<?> preSend(Message<?> message, MessageChannel channel);
+	<T> Message<T> preSend(Message<T> message, MessageChannel<T> channel);
 
 	/**
 	 * Invoked immediately after the send invocation. The boolean
@@ -54,6 +55,6 @@ public interface ChannelInterceptor {
 	 * it is returned to the caller. The Message may be modified if
 	 * necessary. This only applies to PollableChannels. 
 	 */
-	Message<?> postReceive(Message<?> message, MessageChannel channel);
+	<T> Message<T> postReceive(Message<T> message, MessageChannel<T> channel);
 
 }

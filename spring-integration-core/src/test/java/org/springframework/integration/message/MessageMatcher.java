@@ -3,13 +3,13 @@
  */
 package org.springframework.integration.message;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.springframework.integration.Message;
 import org.springframework.integration.MessageHeaders;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Matcher to make assertions about message equality easier.  Usage:
@@ -31,17 +31,17 @@ import org.springframework.integration.MessageHeaders;
  * @author Dave Syer
  *
  */
-public class MessageMatcher extends BaseMatcher<Message<?>> {
+public class MessageMatcher extends BaseMatcher<Message> {
 
 	private final Object payload;
 	private final Map<String, Object> headers;
 
-	public MessageMatcher(Message<?> operand) {
+	public MessageMatcher(Message operand) {
 		this.payload = operand.getPayload();
 		this.headers = getHeaders(operand);
 	}
 
-	private Map<String, Object> getHeaders(Message<?> operand) {
+	private Map<String, Object> getHeaders(Message operand) {
 		HashMap<String, Object> headers = new HashMap<String, Object>(operand.getHeaders());
 		headers.remove(MessageHeaders.ID);
 		headers.remove(MessageHeaders.TIMESTAMP);

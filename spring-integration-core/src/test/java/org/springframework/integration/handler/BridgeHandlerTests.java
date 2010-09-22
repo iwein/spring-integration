@@ -16,13 +16,9 @@
 
 package org.springframework.integration.handler;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
-
 import org.hamcrest.Factory;
 import org.hamcrest.Matcher;
 import org.junit.Test;
-
 import org.springframework.integration.Message;
 import org.springframework.integration.channel.QueueChannel;
 import org.springframework.integration.core.PollableChannel;
@@ -30,6 +26,9 @@ import org.springframework.integration.message.GenericMessage;
 import org.springframework.integration.message.MessageMatcher;
 import org.springframework.integration.support.MessageBuilder;
 import org.springframework.integration.support.channel.ChannelResolutionException;
+
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
 
 /**
  * @author Mark Fisher
@@ -40,7 +39,7 @@ public class BridgeHandlerTests {
 	private BridgeHandler handler= new BridgeHandler();
 
 	@Factory
-    public static Matcher<Message<?>> sameExceptImmutableHeaders(Message<?> expected) {
+    public static Matcher<Message> sameExceptImmutableHeaders(Message expected) {
         return new MessageMatcher(expected);
     }
 

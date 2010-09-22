@@ -15,28 +15,11 @@
  */
 package org.springframework.integration.xml.transformer;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.Result;
-import javax.xml.transform.Source;
-import javax.xml.transform.Templates;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMResult;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamSource;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.context.expression.MapAccessor;
 import org.springframework.core.io.Resource;
 import org.springframework.expression.Expression;
-import org.springframework.expression.ExpressionParser;
-import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
 import org.springframework.integration.Message;
 import org.springframework.integration.MessageHeaders;
@@ -51,6 +34,14 @@ import org.springframework.util.PatternMatchUtils;
 import org.springframework.xml.transform.StringResult;
 import org.springframework.xml.transform.StringSource;
 import org.w3c.dom.Document;
+
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.*;
+import javax.xml.transform.dom.DOMResult;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamSource;
+import java.io.IOException;
+import java.util.Map;
 
 /**
  * Thread safe XSLT transformer implementation which returns a transformed
@@ -152,7 +143,7 @@ public class XsltPayloadTransformer extends AbstractTransformer {
 	}
 
 	@Override
-	protected Object doTransform(Message<?> message) throws Exception {
+	protected Object doTransform(Message message) throws Exception {
 		Transformer transformer = buildTransformer(message);
 		Object payload = message.getPayload();
 		Object transformedPayload = null;

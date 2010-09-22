@@ -16,10 +16,6 @@
 
 package org.springframework.integration.channel;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.core.OrderComparator;
@@ -35,6 +31,10 @@ import org.springframework.integration.support.MessageBuilder;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
+
 /**
  * Base class for {@link MessageChannel} implementations providing common
  * properties such as the channel name. Also provides the common functionality
@@ -43,8 +43,9 @@ import org.springframework.util.StringUtils;
  * 
  * @author Mark Fisher
  * @author Oleg Zhurakousky
+ * @author Iwein Fuld
  */
-public abstract class AbstractMessageChannel extends IntegrationObjectSupport implements MessageChannel, TrackableComponent {
+public abstract class AbstractMessageChannel<T> extends IntegrationObjectSupport implements MessageChannel<T>, TrackableComponent {
 
 	private final Log logger = LogFactory.getLog(this.getClass());
 
@@ -124,7 +125,7 @@ public abstract class AbstractMessageChannel extends IntegrationObjectSupport im
 	 * @return <code>true</code> if the message is sent successfully or
 	 * <code>false</code> if the sending thread is interrupted.
 	 */
-	public final boolean send(Message<?> message) {
+	public final boolean send(Message<? extends T> message) {
 		return this.send(message, -1);
 	}
 
@@ -142,7 +143,7 @@ public abstract class AbstractMessageChannel extends IntegrationObjectSupport im
 	 * <code>false</code> if the message cannot be sent within the allotted
 	 * time or the sending thread is interrupted.
 	 */
-	public final boolean send(Message<?> message, long timeout) {
+	public final boolean send(Message<? extends T> message, long timeout) {
 		Assert.notNull(message, "message must not be null");
 		Assert.notNull(message.getPayload(), "message payload must not be null");
 		if (this.shouldTrack) {
@@ -167,11 +168,12 @@ public abstract class AbstractMessageChannel extends IntegrationObjectSupport im
 		}
 	}
 
-	private Message<?> convertPayloadIfNecessary(Message<?> message) {
+	@SuppressWarnings("unchecked")
+	private Message<T> convertPayloadIfNecessary(Message<? extends T> message) {
 		// first pass checks if the payload type already matches any of the datatypes
 		for (Class<?> datatype : this.datatypes) {
 			if (datatype.isAssignableFrom(message.getPayload().getClass())) {
-				return message;
+				return (Message<T>) message;
 			}
 		}
 		// second pass applies conversion if possible, attempting datatypes in order
@@ -180,7 +182,7 @@ public abstract class AbstractMessageChannel extends IntegrationObjectSupport im
 			for (Class<?> datatype : this.datatypes) {
 				if (conversionService.canConvert(message.getPayload().getClass(), datatype)) {
 					Object convertedPayload = conversionService.convert(message.getPayload(), datatype);
-					return MessageBuilder.withPayload(convertedPayload).copyHeaders(message.getHeaders()).build();
+					return (Message<T>) MessageBuilder.withPayload(convertedPayload).copyHeaders(message.getHeaders()).build();
 				}
 			}
 		}
@@ -197,7 +199,7 @@ public abstract class AbstractMessageChannel extends IntegrationObjectSupport im
 	 * value indicates that the method should block until either the message is
 	 * accepted or the blocking thread is interrupted.
 	 */
-	protected abstract boolean doSend(Message<?> message, long timeout);
+	protected abstract boolean doSend(Message<? extends T> message, long timeout);
 
 
 	/**
@@ -219,7 +221,7 @@ public abstract class AbstractMessageChannel extends IntegrationObjectSupport im
 			return this.interceptors.add(interceptor);
 		}
 
-		public Message<?> preSend(Message<?> message, MessageChannel channel) {
+		public Message<? extends T> preSend(Message<? extends T> message, MessageChannel channel) {
 			if (logger.isDebugEnabled()) {
 				logger.debug("preSend on channel '" + channel + "', message: " + message);
 			}
@@ -253,7 +255,7 @@ public abstract class AbstractMessageChannel extends IntegrationObjectSupport im
 			return true;
 		}
 
-		public Message<?> postReceive(Message<?> message, MessageChannel channel) {
+		public Message<T> postReceive(Message<T> message, MessageChannel channel) {
 			if (message != null && logger.isDebugEnabled()) {
 				logger.debug("postReceive on channel '" + channel + "', message: " + message);
 			}

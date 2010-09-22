@@ -24,14 +24,14 @@ import org.springframework.integration.MessageChannel;
  * 
  * @author Mark Fisher
  */
-public interface PollableChannel extends MessageChannel {
+public interface PollableChannel<T> extends MessageChannel<T> {
 
 	/**
 	 * Receive a message from this channel, blocking indefinitely if necessary.
 	 * 
 	 * @return the next available {@link Message} or <code>null</code> if interrupted
 	 */
-	Message<?> receive();
+	Message<T> receive();
 
 	/**
 	 * Receive a message from this channel, blocking until either a message is
@@ -42,6 +42,6 @@ public interface PollableChannel extends MessageChannel {
 	 * @return the next available {@link Message} or <code>null</code> if the
 	 * specified timeout period elapses or the message reception is interrupted
 	 */
-	Message<?> receive(long timeout);
+	Message<T> receive(long timeout);
 
 }

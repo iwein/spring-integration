@@ -16,18 +16,6 @@
 
 package org.springframework.integration.json;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
-
-import java.io.IOException;
-import java.io.StringWriter;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -40,6 +28,12 @@ import org.springframework.integration.MessageHeaders;
 import org.springframework.integration.message.MessageMatcher;
 import org.springframework.integration.support.MessageBuilder;
 
+import java.io.IOException;
+import java.io.StringWriter;
+import java.util.*;
+
+import static org.junit.Assert.*;
+
 /**
  * @author Jeremy Grelle
  * @author Mark Fisher
@@ -50,7 +44,7 @@ public class InboundJsonMessageMapperTests {
 	private ObjectMapper mapper = new ObjectMapper();
 	
 	@Factory
-    public static Matcher<Message<?>> sameExceptImmutableHeaders(Message<?> operand) {
+    public static Matcher<Message> sameExceptImmutableHeaders(Message<?> operand) {
         return new MessageMatcher(operand);
     }
 

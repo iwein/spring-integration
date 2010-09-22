@@ -15,10 +15,6 @@
  */
 package org.springframework.integration.channel.interceptor;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.DirectFieldAccessor;
@@ -29,6 +25,10 @@ import org.springframework.integration.Message;
 import org.springframework.integration.MessageChannel;
 import org.springframework.integration.channel.AbstractMessageChannel;
 import org.springframework.integration.channel.ChannelInterceptor;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Oleg Zhurakousky
@@ -131,7 +131,7 @@ public class GlobalChannelInterceptorTests {
 		public void setTestIdentifier(String testIdentifier) {
 			this.testIdentifier = testIdentifier;
 		}
-		public Message<?> postReceive(Message<?> message, MessageChannel channel) {
+		public <T> Message<T> postReceive(Message<T> message, MessageChannel<T> channel) {
 			return null;
 		}
 		public void postSend(Message<?> message, MessageChannel channel,
@@ -140,7 +140,7 @@ public class GlobalChannelInterceptorTests {
 		public boolean preReceive(MessageChannel channel) {
 			return false;
 		}
-		public Message<?> preSend(Message<?> message, MessageChannel channel) {
+		public <T> Message<T> preSend(Message<T> message, MessageChannel<T> channel) {
 			return null;
 		}	
 		public String toString(){

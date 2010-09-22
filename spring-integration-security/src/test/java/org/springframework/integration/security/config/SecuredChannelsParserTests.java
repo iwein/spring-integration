@@ -16,14 +16,6 @@
 
 package org.springframework.integration.security.config;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.regex.Pattern;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.aop.Advisor;
@@ -41,9 +33,10 @@ import org.springframework.security.access.ConfigAttribute;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import java.util.*;
+import java.util.regex.Pattern;
+
+import static org.junit.Assert.*;
 
 /**
  * @author Jonas Partner
@@ -194,7 +187,7 @@ public class SecuredChannelsParserTests extends AbstractJUnit4SpringContextTests
 		}
 
 		@Override
-		protected boolean doSend(Message<?> message, long timeout) {
+		protected boolean doSend(Message message, long timeout) {
 			return false;
 		}
 

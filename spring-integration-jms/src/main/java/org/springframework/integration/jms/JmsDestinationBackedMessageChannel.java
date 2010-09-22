@@ -191,12 +191,12 @@ public class JmsDestinationBackedMessageChannel extends MessageListenerContainer
 		return this.dispatcher.removeHandler(handler);
 	}
 
-	public boolean send(Message<?> message) {
+	public boolean send(Message message) {
 		this.jmsTemplate.convertAndSend(message);
 		return true;
 	}
 
-	public boolean send(Message<?> message, long timeout) {
+	public boolean send(Message message, long timeout) {
 		return this.send(message);
 	}
 

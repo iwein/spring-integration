@@ -16,12 +16,8 @@
 
 package org.springframework.integration.transformer;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.integration.Message;
@@ -30,6 +26,9 @@ import org.springframework.integration.handler.ExpressionEvaluatingMessageProces
 import org.springframework.integration.handler.MessageProcessor;
 import org.springframework.integration.handler.MethodInvokingMessageProcessor;
 import org.springframework.integration.support.MessageBuilder;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * A Transformer that adds statically configured header values to a Message.
@@ -82,7 +81,7 @@ public class HeaderEnricher implements Transformer {
 		this.shouldSkipNulls = shouldSkipNulls;
 	}
 
-	public Message<?> transform(Message<?> message) {
+	public Message transform(Message message) {
 		try {
 			Map<String, Object> headerMap = new HashMap<String, Object>(message.getHeaders());
 			this.addHeadersFromMessageProcessor(message, headerMap);
@@ -105,8 +104,7 @@ public class HeaderEnricher implements Transformer {
         }
 	}
 
-	@SuppressWarnings("unchecked")
-	private void addHeadersFromMessageProcessor(Message<?> message, Map<String, Object> headerMap) {
+	private void addHeadersFromMessageProcessor(Message message, Map<String, Object> headerMap) {
 		if (this.messageProcessor != null) {
 			Object result = this.messageProcessor.processMessage(message);
 			if (result instanceof Map) {

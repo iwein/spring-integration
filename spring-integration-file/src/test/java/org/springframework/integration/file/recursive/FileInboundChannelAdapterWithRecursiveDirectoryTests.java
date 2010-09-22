@@ -45,7 +45,7 @@ public class FileInboundChannelAdapterWithRecursiveDirectoryTests {
     private TemporaryFolder directory;
 
     @Autowired
-    private PollableChannel files;
+    private PollableChannel<File> files;
 
     @Test(timeout = 2000)
     public void shouldScanDirectoriesRecursively() throws IOException {
@@ -69,7 +69,7 @@ public class FileInboundChannelAdapterWithRecursiveDirectoryTests {
         File childFile = new File(folder, "baz");
         childFile.createNewFile();
 
-        List<Message<?>> received = Arrays.asList(files.receive(), files.receive());
+        List<Message<File>> received = Arrays.asList(files.receive(), files.receive());
         //verify
         assertThat(received, hasItems(hasPayload(siblingFile), hasPayload(childFile)));
     }

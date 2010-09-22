@@ -16,19 +16,12 @@
 
 package org.springframework.integration.core;
 
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.integration.Message;
-import org.springframework.integration.MessageChannel;
-import org.springframework.integration.MessageDeliveryException;
-import org.springframework.integration.MessageHeaders;
-import org.springframework.integration.MessagingException;
+import org.springframework.integration.*;
 import org.springframework.integration.support.MessageBuilder;
 import org.springframework.integration.support.channel.BeanFactoryChannelResolver;
 import org.springframework.integration.support.channel.ChannelResolutionException;
@@ -36,6 +29,9 @@ import org.springframework.integration.support.channel.ChannelResolver;
 import org.springframework.integration.support.converter.MessageConverter;
 import org.springframework.integration.support.converter.SimpleMessageConverter;
 import org.springframework.util.Assert;
+
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 /**
  * This is the central class for invoking message exchange operations across
@@ -282,7 +278,7 @@ public class MessagingTemplate implements MessagingOperations, BeanFactoryAware,
 		return this.messageConverter.fromMessage(replyMessage);
 	}
 
-	private void doSend(MessageChannel channel, Message<?> message) {
+	private <T> void  doSend(MessageChannel<T> channel, Message<T> message) {
 		Assert.notNull(channel, "channel must not be null");
 		long timeout = this.sendTimeout;
 		boolean sent = (timeout >= 0)
@@ -354,9 +350,9 @@ public class MessagingTemplate implements MessagingOperations, BeanFactoryAware,
 	}
 
 
-	private static class TemporaryReplyChannel implements PollableChannel {
+	private static class TemporaryReplyChannel<T> implements PollableChannel<T> {
 
-		private volatile Message<?> message;
+		private volatile Message<T> message;
 
 		private final long receiveTimeout;
 
@@ -368,11 +364,11 @@ public class MessagingTemplate implements MessagingOperations, BeanFactoryAware,
 		}
 
 
-		public Message<?> receive() {
+		public Message<T> receive() {
 			return this.receive(-1);
 		}
 
-		public Message<?> receive(long timeout) {
+		public Message<T> receive(long timeout) {
 			try {
 				if (this.receiveTimeout < 0) {
 					this.latch.await();
@@ -387,12 +383,13 @@ public class MessagingTemplate implements MessagingOperations, BeanFactoryAware,
 			return this.message;
 		}
 
-		public boolean send(Message<?> message) {
+		public boolean send(Message<? extends T> message) {
 			return this.send(message, -1);
 		}
 
-		public boolean send(Message<?> message, long timeout) {
-			this.message = message;
+		@SuppressWarnings("unchecked")
+		public boolean send(Message<? extends T> message, long timeout) {
+			this.message = (Message<T>) message;
 			this.latch.countDown();
 			return true;
 		}

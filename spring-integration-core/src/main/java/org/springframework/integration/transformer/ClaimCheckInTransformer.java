@@ -43,7 +43,7 @@ public class ClaimCheckInTransformer extends AbstractTransformer {
 
 
 	@Override
-	protected Object doTransform(Message<?> message) throws Exception {
+	protected Object doTransform(Message message) throws Exception {
 		Assert.notNull(message, "message must not be null");
 		Object payload = message.getPayload();
 		Assert.notNull(payload, "payload must not be null");

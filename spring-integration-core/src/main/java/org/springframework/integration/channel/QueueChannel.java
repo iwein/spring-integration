@@ -16,15 +16,15 @@
 
 package org.springframework.integration.channel;
 
+import org.springframework.integration.Message;
+import org.springframework.integration.core.MessageSelector;
+import org.springframework.util.Assert;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
-
-import org.springframework.integration.Message;
-import org.springframework.integration.core.MessageSelector;
-import org.springframework.util.Assert;
 
 /**
  * Simple implementation of a message channel. Each {@link Message} is placed in
@@ -35,15 +35,16 @@ import org.springframework.util.Assert;
  * 
  * @author Mark Fisher
  * @author Oleg Zhurakousky
+ * @author Iwein Fuld
  */
-public class QueueChannel extends AbstractPollableChannel {
+public class QueueChannel<T> extends AbstractPollableChannel<T> {
 
-	private final BlockingQueue<Message<?>> queue;
+	private final BlockingQueue<Message<T>> queue;
 
 	/**
 	 * Create a channel with the specified queue.
 	 */
-	public QueueChannel(BlockingQueue<Message<?>> queue) {
+	public QueueChannel(BlockingQueue<Message<T>> queue) {
 		Assert.notNull(queue, "'queue' must not be null");
 		this.queue = queue;
 	}
@@ -54,7 +55,7 @@ public class QueueChannel extends AbstractPollableChannel {
 	public QueueChannel(int capacity) {
 		Assert.isTrue(capacity > 0, "The capacity must be a positive integer. " +
 				"For a zero-capacity alternative, consider using a 'RendezvousChannel'.");
-		this.queue = new LinkedBlockingQueue<Message<?>>(capacity);
+		this.queue = new LinkedBlockingQueue<Message<T>>(capacity);
 	}
 
 	/**
@@ -63,20 +64,20 @@ public class QueueChannel extends AbstractPollableChannel {
 	 * unbounded queue may lead to OutOfMemoryErrors.
 	 */
 	public QueueChannel() {
-		this(new LinkedBlockingQueue<Message<?>>());
+		this(new LinkedBlockingQueue<Message<T>>());
 	}
 
-
-	protected boolean doSend(Message<?> message, long timeout) {
+	protected boolean doSend(Message<? extends T> message, long timeout) {
 		Assert.notNull(message, "'message' must not be null");
+		Message<T> castMessage = (Message<T>) message;
 		try {
 			if (timeout > 0) {
-				return this.queue.offer(message, timeout, TimeUnit.MILLISECONDS);
+				return this.queue.offer(castMessage, timeout, TimeUnit.MILLISECONDS);
 			}
 			if (timeout == 0) {
-				return this.queue.offer(message);
+				return this.queue.offer(castMessage);
 			}
-			queue.put(message);
+			queue.put(castMessage);
 			return true;
 		}
 		catch (InterruptedException e) {
@@ -85,7 +86,7 @@ public class QueueChannel extends AbstractPollableChannel {
 		}
 	}
 
-	protected Message<?> doReceive(long timeout) {
+	protected Message<T> doReceive(long timeout) {
 		try {
 			if (timeout > 0) {
 				return queue.poll(timeout, TimeUnit.MILLISECONDS);
@@ -131,9 +132,8 @@ public class QueueChannel extends AbstractPollableChannel {
 	public int getQueueSize() {
 		return this.queue.size();
 	}
-	
+
 	public int getRemainingCapacity() {
 		return this.queue.remainingCapacity();
 	}
-	
 }

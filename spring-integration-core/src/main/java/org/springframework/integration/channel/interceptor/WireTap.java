@@ -104,7 +104,7 @@ public class WireTap extends ChannelInterceptorAdapter implements Lifecycle {
 	 * <code>null</code>, it will accept all messages.
 	 */
 	@Override
-	public Message<?> preSend(Message<?> message, MessageChannel channel) {
+	public <T> Message<T>  preSend(Message<T>  message, MessageChannel<T> channel) {
 		if (this.running && (this.selector == null || this.selector.accept(message))) {
 			boolean sent = (this.timeout >= 0)
 					? this.channel.send(message, this.timeout)

@@ -37,7 +37,7 @@ import java.util.Map;
  * @author Oleg Zhurakousky
  * @since 2.0
  */
-public class ObjectToMapTransformer extends AbstractPayloadTransformer<Object, Map<?,?>> {
+public class ObjectToMapTransformer extends AbstractPayloadTransformer<Object, Map<String,Object>> {
 
 	/*
 	 * (non-Javadoc)

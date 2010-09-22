@@ -97,7 +97,7 @@ public class XPathTransformer extends AbstractTransformer {
 	}
 
 	@Override
-	protected Object doTransform(Message<?> message) throws Exception {
+	protected Object doTransform(Message message) throws Exception {
 		Node node = this.converter.convertToNode(message.getPayload());
 		Object result = null;
 		if (this.nodeMapper != null) {

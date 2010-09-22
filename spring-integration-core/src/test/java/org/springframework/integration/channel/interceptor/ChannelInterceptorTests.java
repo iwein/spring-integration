@@ -16,18 +16,7 @@
 
 package org.springframework.integration.channel.interceptor;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-
-import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
-
 import org.junit.Test;
-
 import org.springframework.beans.DirectFieldAccessor;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -38,6 +27,12 @@ import org.springframework.integration.channel.QueueChannel;
 import org.springframework.integration.message.GenericMessage;
 import org.springframework.integration.support.MessageBuilder;
 import org.springframework.util.StringUtils;
+
+import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import static org.junit.Assert.*;
 
 /**
  * @author Mark Fisher
@@ -74,7 +69,7 @@ public class ChannelInterceptorTests {
 		final AtomicBoolean invoked = new AtomicBoolean(false);
 		channel.addInterceptor(new ChannelInterceptorAdapter() {
 			@Override
-			public void postSend(Message<?> message, MessageChannel channel, boolean sent) {
+			public  void postSend(Message message, MessageChannel channel, boolean sent) {
 				assertNotNull(message);
 				assertNotNull(channel);
 				assertSame(ChannelInterceptorTests.this.channel, channel);
@@ -93,7 +88,7 @@ public class ChannelInterceptorTests {
 		final QueueChannel singleItemChannel = new QueueChannel(1);
 		singleItemChannel.addInterceptor(new ChannelInterceptorAdapter() {
 			@Override
-			public void postSend(Message<?> message, MessageChannel channel, boolean sent) {
+			public void postSend(Message message, MessageChannel channel, boolean sent) {
 				assertNotNull(message);
 				assertNotNull(channel);
 				assertSame(singleItemChannel, channel);
@@ -139,7 +134,7 @@ public class ChannelInterceptorTests {
 		final AtomicInteger messageCount = new AtomicInteger();
 		channel.addInterceptor(new ChannelInterceptorAdapter() {
 			@Override
-			public Message<?> postReceive(Message<?> message, MessageChannel channel) {
+			public Message postReceive(Message message, MessageChannel channel) {
 				assertNotNull(channel);
 				assertSame(ChannelInterceptorTests.this.channel, channel);
 				if (message != null) {
@@ -180,9 +175,9 @@ public class ChannelInterceptorTests {
 		private static AtomicInteger counter = new AtomicInteger();
 
 		@Override
-		public Message<?> preSend(Message<?> message, MessageChannel channel) {
+		public <T> Message<T> preSend(Message<T> message, MessageChannel<T> channel) {
 			assertNotNull(message);
-			Message<?> reply = MessageBuilder.fromMessage(message)
+			Message<T> reply = MessageBuilder.fromMessage(message)
 					.setHeader(this.getClass().getSimpleName(), counter.incrementAndGet()).build();
 			return reply;
 		}
@@ -205,7 +200,7 @@ public class ChannelInterceptorTests {
 		}
 
 		@Override
-		public Message<?> preSend(Message<?> message, MessageChannel channel) {
+		public Message preSend(Message message, MessageChannel channel) {
 			assertNotNull(message);
 			counter.incrementAndGet();
 			return null;

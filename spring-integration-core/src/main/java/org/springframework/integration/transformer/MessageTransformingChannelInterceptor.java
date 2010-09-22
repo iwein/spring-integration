@@ -48,7 +48,7 @@ public class MessageTransformingChannelInterceptor extends ChannelInterceptorAda
 	}
 
 	@Override
-	public Message<?> preSend(Message<?> message, MessageChannel channel) {
+	public <T> Message<T> preSend(Message<T> message, MessageChannel<T> channel) {
 		if (this.transformOnSend) {
 			message = this.transformer.transform(message);
 		}
@@ -56,7 +56,7 @@ public class MessageTransformingChannelInterceptor extends ChannelInterceptorAda
 	}
 
 	@Override
-	public Message<?> postReceive(Message<?> message, MessageChannel channel) {
+	public <T> Message<T> postReceive(Message<T> message, MessageChannel<T> channel) {
 		if (!this.transformOnSend) {
 			message = this.transformer.transform(message);
 		}

@@ -66,7 +66,7 @@ public class BeanFactoryChannelResolver implements ChannelResolver, BeanFactoryA
 		this.beanFactory = beanFactory;
 	}
 
-	public MessageChannel resolveChannelName(String name) {
+	public <T> MessageChannel<T> resolveChannelName(String name) {
 		Assert.state(this.beanFactory != null, "BeanFactory is required");
 		try {
 			return this.beanFactory.getBean(name, MessageChannel.class);

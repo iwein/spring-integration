@@ -25,14 +25,14 @@ import org.springframework.integration.Message;
  * of the result Message.
  * 
  * @author Mark Fisher
+ * @author Iwein Fuld
  */
-public abstract class AbstractPayloadTransformer<T, U> extends AbstractTransformer {
+public abstract class AbstractPayloadTransformer<IN, OUT> extends AbstractTransformer<OUT> {
 
-	@SuppressWarnings("unchecked")
-	public final U doTransform(Message<?> message) throws Exception {
-		return this.transformPayload((T) message.getPayload());
+	public final <T> OUT doTransform(Message<T> message) throws Exception {
+		return this.transformPayload((IN) message.getPayload());
 	}
 
-	protected abstract U transformPayload(T payload) throws Exception;
+	protected abstract OUT transformPayload(IN payload) throws Exception;
 
 }

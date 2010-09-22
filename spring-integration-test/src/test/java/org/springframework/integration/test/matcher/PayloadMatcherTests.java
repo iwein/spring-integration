@@ -15,18 +15,16 @@
  */
 package org.springframework.integration.test.matcher;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.not;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.springframework.integration.test.matcher.PayloadMatcher.hasPayload;
-
-import java.math.BigDecimal;
-
 import org.junit.Test;
 import org.springframework.integration.Message;
 import org.springframework.integration.support.MessageBuilder;
+
+import java.math.BigDecimal;
+
+import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.springframework.integration.test.matcher.PayloadMatcher.hasPayload;
 
 /**
  * @author Alex Peters
@@ -36,7 +34,7 @@ public class PayloadMatcherTests {
 
 	static final BigDecimal ANY_PAYLOAD = new BigDecimal("1.123");
 
-	Message<BigDecimal> message =MessageBuilder.withPayload(ANY_PAYLOAD).build();;
+	Message<BigDecimal> message = MessageBuilder.withPayload(ANY_PAYLOAD).build();
 
 	@Test
 	public void hasPayload_withEqualValue_matches() throws Exception {
@@ -64,7 +62,7 @@ public class PayloadMatcherTests {
 	@Test
 	public void readableException() throws Exception {
 		try {
-			assertThat(message, hasPayload("woot"));
+			assertThat(message, hasPayload(new BigDecimal("1")));
 		} catch(AssertionError ae){
 			assertTrue(ae.getMessage().contains("Expected: a Message with payload: "));
 		}

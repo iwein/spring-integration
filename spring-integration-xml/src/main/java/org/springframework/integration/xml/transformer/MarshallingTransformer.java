@@ -16,11 +16,6 @@
 
 package org.springframework.integration.xml.transformer;
 
-import java.io.IOException;
-
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.Result;
-
 import org.springframework.integration.Message;
 import org.springframework.integration.MessagingException;
 import org.springframework.integration.transformer.AbstractTransformer;
@@ -28,6 +23,10 @@ import org.springframework.integration.xml.result.DomResultFactory;
 import org.springframework.integration.xml.result.ResultFactory;
 import org.springframework.oxm.Marshaller;
 import org.springframework.util.Assert;
+
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.Result;
+import java.io.IOException;
 
 /**
  * An implementation of {@link AbstractTransformer} that delegates to an OXM {@link Marshaller}.
@@ -74,7 +73,7 @@ public class MarshallingTransformer extends AbstractTransformer {
 	}
 
 	@Override
-	public Object doTransform(Message<?> message) {
+	public Object doTransform(Message message) {
 		Object source = (this.extractPayload) ? message.getPayload() : message;
 		Object transformedPayload = null;
 		Result result = this.resultFactory.createResult(source);

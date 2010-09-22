@@ -16,15 +16,8 @@
 
 package org.springframework.integration.mail.transformer;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.mail.Address;
-import javax.mail.Message.RecipientType;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import org.springframework.integration.Message;
 import org.springframework.integration.MessagingException;
 import org.springframework.integration.mail.MailHeaders;
@@ -33,18 +26,23 @@ import org.springframework.integration.transformer.MessageTransformationExceptio
 import org.springframework.integration.transformer.Transformer;
 import org.springframework.util.Assert;
 
+import javax.mail.Address;
+import javax.mail.Message.RecipientType;
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Base class for Transformers that convert from a JavaMail Message to a
  * Spring Integration Message.
  * 
  * @author Mark Fisher
  */
-public abstract class AbstractMailMessageTransformer<T> implements Transformer {
+public abstract class AbstractMailMessageTransformer<T> implements Transformer<T> {
 
 	protected final Log logger = LogFactory.getLog(this.getClass());
 
 
-	public Message<?> transform(Message<?> message) {
+	public <IN> Message<T> transform(Message<IN> message) {
 		Object payload = message.getPayload();
 		if (!(payload instanceof javax.mail.Message)) {
 			throw new MessageTransformationException(message, this.getClass().getSimpleName()

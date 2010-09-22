@@ -28,6 +28,6 @@ public interface ChannelResolver {
 	/**
 	 * Return the MessageChannel for the given name.
 	 */
-	MessageChannel resolveChannelName(String channelName);
+	<T> MessageChannel<T> resolveChannelName(String channelName);
 
 }

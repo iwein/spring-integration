@@ -16,15 +16,14 @@
 
 package org.springframework.integration.transformer;
 
-import static org.junit.Assert.assertEquals;
-
-import java.util.Date;
-
 import org.junit.Test;
-
 import org.springframework.integration.Message;
 import org.springframework.integration.MessagingException;
 import org.springframework.integration.message.GenericMessage;
+
+import java.util.Date;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * @author Mark Fisher
@@ -60,8 +59,10 @@ public class PayloadTransformerTests {
 			if (s.equals("bad")) {
 				throw new Exception("bad input!");
 			}
-			return s.length();
+			return s.toString().length();
 		}
+
+
 	}
 
 }

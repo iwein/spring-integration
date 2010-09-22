@@ -16,11 +16,8 @@
 
 package org.springframework.integration.file.transformer;
 
-import java.io.File;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import org.springframework.integration.Message;
 import org.springframework.integration.MessagingException;
 import org.springframework.integration.file.FileHeaders;
@@ -28,12 +25,14 @@ import org.springframework.integration.support.MessageBuilder;
 import org.springframework.integration.transformer.Transformer;
 import org.springframework.util.Assert;
 
+import java.io.File;
+
 /**
  * Base class for transformers that convert a File payload.
  * 
  * @author Mark Fisher
  */
-public abstract class AbstractFilePayloadTransformer<T> implements Transformer {
+public abstract class AbstractFilePayloadTransformer<T> implements Transformer<T> {
 
 	private final Log logger = LogFactory.getLog(this.getClass());
 
@@ -48,15 +47,15 @@ public abstract class AbstractFilePayloadTransformer<T> implements Transformer {
 		this.deleteFiles = deleteFiles;
 	}
 
-	public final Message<?> transform(Message<?> message) {
+	public  final <IN> Message<T> transform(Message<IN> message) {
 		try {
 			Assert.notNull(message, "Message must not be null");
-			Object payload = message.getPayload();
+			IN payload = message.getPayload();
 			Assert.notNull(payload, "Mesasge payload must not be null");
 			Assert.isInstanceOf(File.class, payload, "Message payload must be of type [java.io.File]");
 			File file = (File) payload;
 	        T result = this.transformFile(file);
-	        Message<?> transformedMessage = MessageBuilder.withPayload(result)
+	        Message<T> transformedMessage = MessageBuilder.withPayload(result)
 	        		.copyHeaders(message.getHeaders())
 	        		.setHeaderIfAbsent(FileHeaders.ORIGINAL_FILE, file)
 	        		.setHeaderIfAbsent(FileHeaders.FILENAME, file.getName())

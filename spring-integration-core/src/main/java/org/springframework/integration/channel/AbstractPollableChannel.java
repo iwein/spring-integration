@@ -24,7 +24,7 @@ import org.springframework.integration.core.PollableChannel;
  * 
  * @author Mark Fisher
  */
-public abstract class AbstractPollableChannel extends AbstractMessageChannel implements PollableChannel {
+public abstract class AbstractPollableChannel<T> extends AbstractMessageChannel<T> implements PollableChannel<T> {
 
 	/**
 	 * Receive the first available message from this channel. If the channel
@@ -33,7 +33,7 @@ public abstract class AbstractPollableChannel extends AbstractMessageChannel imp
 	 * @return the first available message or <code>null</code> if the
 	 * receiving thread is interrupted.
 	 */
-	public final Message<?> receive() {
+	public final Message<T> receive() {
 		return this.receive(-1);
 	}
 
@@ -50,11 +50,11 @@ public abstract class AbstractPollableChannel extends AbstractMessageChannel imp
 	 * is available within the allotted time or the receiving thread is
 	 * interrupted.
 	 */
-	public final Message<?> receive(long timeout) {
+	public final Message<T> receive(long timeout) {
 		if (!this.getInterceptors().preReceive(this)) {
 			return null;
 		}
-		Message<?> message = this.doReceive(timeout);
+		Message<T> message = this.doReceive(timeout);
 		message = this.getInterceptors().postReceive(message, this);
 		return message;
 	}
@@ -66,6 +66,6 @@ public abstract class AbstractPollableChannel extends AbstractMessageChannel imp
 	 * indicates that the method should block until either a message is
 	 * available or the blocking thread is interrupted.
 	 */
-	protected abstract Message<?> doReceive(long timeout);
+	protected abstract Message<T> doReceive(long timeout);
 
 }

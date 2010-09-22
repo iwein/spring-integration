@@ -16,22 +16,19 @@
 
 package org.springframework.integration.mail.config;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
-import javax.mail.internet.MimeMessage;
-
 import org.easymock.classextension.EasyMock;
 import org.junit.Test;
-
 import org.springframework.beans.factory.BeanDefinitionStoreException;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.integration.Message;
 import org.springframework.integration.MessageChannel;
 import org.springframework.integration.core.PollableChannel;
-import org.springframework.integration.message.GenericMessage;
+import org.springframework.integration.support.MessageBuilder;
 import org.springframework.integration.support.channel.BeanFactoryChannelResolver;
+
+import javax.mail.internet.MimeMessage;
+
+import static org.junit.Assert.*;
 
 /**
  * @author Mark Fisher
@@ -39,6 +36,7 @@ import org.springframework.integration.support.channel.BeanFactoryChannelResolve
 public class MailToStringTransformerParserTests {
 
 	@Test
+	@SuppressWarnings("unchecked")
 	public void topLevelTransformer() throws Exception {
 		ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(
 				"mailToStringTransformerParserTests.xml",  this.getClass());
@@ -47,7 +45,7 @@ public class MailToStringTransformerParserTests {
 		MimeMessage mimeMessage = EasyMock.createNiceMock(MimeMessage.class);
 		EasyMock.expect(mimeMessage.getContent()).andReturn("hello");
 		EasyMock.replay(mimeMessage);
-		input.send(new GenericMessage<javax.mail.Message>(mimeMessage));
+		input.send(MessageBuilder.withPayload(mimeMessage).build());
 		Message<?> result = output.receive(0);
 		assertNotNull(result);
 		assertEquals("hello", result.getPayload());
@@ -55,6 +53,7 @@ public class MailToStringTransformerParserTests {
 	}
 
 	@Test
+	@SuppressWarnings("unchecked")
 	public void transformerWithinChain() throws Exception {
 		ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(
 				"mailToStringTransformerWithinChain.xml",  this.getClass());
@@ -63,7 +62,7 @@ public class MailToStringTransformerParserTests {
 		MimeMessage mimeMessage = EasyMock.createNiceMock(MimeMessage.class);
 		EasyMock.expect(mimeMessage.getContent()).andReturn("foo");
 		EasyMock.replay(mimeMessage);
-		input.send(new GenericMessage<javax.mail.Message>(mimeMessage));
+		input.send(MessageBuilder.withPayload(mimeMessage).build());
 		Message<?> result = output.receive(0);
 		assertNotNull(result);
 		assertEquals("FOO!!!", result.getPayload());

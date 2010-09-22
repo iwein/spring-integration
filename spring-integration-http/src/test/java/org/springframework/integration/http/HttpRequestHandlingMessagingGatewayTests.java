@@ -16,13 +16,6 @@
 
 package org.springframework.integration.http;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.Arrays;
-
 import org.junit.Test;
 import org.springframework.http.HttpInputMessage;
 import org.springframework.http.HttpOutputMessage;
@@ -37,6 +30,13 @@ import org.springframework.integration.channel.QueueChannel;
 import org.springframework.integration.handler.AbstractReplyProducingMessageHandler;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.util.LinkedMultiValueMap;
+
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.Arrays;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 /**
  * @author Mark Fisher
@@ -106,7 +106,7 @@ public class HttpRequestHandlingMessagingGatewayTests {
 	public void testExceptionConversion() throws Exception {
 		QueueChannel requestChannel = new QueueChannel() {
 			@Override
-			protected boolean doSend(Message<?> message, long timeout) {
+			protected boolean doSend(Message message, long timeout) {
 				throw new RuntimeException("Planned");
 			}
 		};

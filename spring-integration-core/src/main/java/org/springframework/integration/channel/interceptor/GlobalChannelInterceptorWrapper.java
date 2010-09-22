@@ -22,19 +22,20 @@ import org.springframework.integration.channel.ChannelInterceptor;
 
 /**
  * @author Oleg Zhurakousky
+ * @author Iwein Fuld
  * @since 2.0
  */
-public class GlobalChannelInterceptorWrapper implements ChannelInterceptor, Ordered{
+public class GlobalChannelInterceptorWrapper implements ChannelInterceptor, Ordered {
 	private ChannelInterceptor channelInterceptor;
 	private String[] patterns;
 	private int order;
-	
-    public GlobalChannelInterceptorWrapper(ChannelInterceptor channelInterceptor){
+
+	public GlobalChannelInterceptorWrapper(ChannelInterceptor channelInterceptor) {
 		this.channelInterceptor = channelInterceptor;
 		// will set initial order for this interceptor wrapper to be the same as the 
 		// underlying interceptor. Could be overridden with setOrder() method
-		if (channelInterceptor instanceof Ordered){
-			order = ((Ordered)channelInterceptor).getOrder();
+		if (channelInterceptor instanceof Ordered) {
+			order = ((Ordered) channelInterceptor).getOrder();
 		}
 	}
 
@@ -43,7 +44,6 @@ public class GlobalChannelInterceptorWrapper implements ChannelInterceptor, Orde
 	}
 
 	/**
-	 * 
 	 * @param order
 	 */
 	public void setOrder(int order) {
@@ -62,12 +62,12 @@ public class GlobalChannelInterceptorWrapper implements ChannelInterceptor, Orde
 		this.patterns = patterns;
 	}
 
-	public Message<?> postReceive(Message<?> message, MessageChannel channel) {
+	public <T> Message<T> postReceive(Message<T> message, MessageChannel<T> channel) {
 		return channelInterceptor.postReceive(message, channel);
 	}
 
 	public void postSend(Message<?> message, MessageChannel channel,
-			boolean sent) {
+						 boolean sent) {
 		channelInterceptor.postSend(message, channel, sent);
 	}
 
@@ -75,11 +75,11 @@ public class GlobalChannelInterceptorWrapper implements ChannelInterceptor, Orde
 		return channelInterceptor.preReceive(channel);
 	}
 
-	public Message<?> preSend(Message<?> message, MessageChannel channel) {
+	public <T> Message<T> preSend(Message<T> message, MessageChannel<T> channel) {
 		return channelInterceptor.preSend(message, channel);
 	}
-	
-	public String toString(){
+
+	public String toString() {
 		return channelInterceptor.toString();
 	}
 }

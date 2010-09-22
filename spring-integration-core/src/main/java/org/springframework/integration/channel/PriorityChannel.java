@@ -16,20 +16,21 @@
 
 package org.springframework.integration.channel;
 
-import java.util.Comparator;
-import java.util.concurrent.PriorityBlockingQueue;
-
 import org.springframework.integration.Message;
 import org.springframework.integration.MessageHeaders;
 import org.springframework.integration.util.UpperBound;
+
+import java.util.Comparator;
+import java.util.concurrent.PriorityBlockingQueue;
 
 /**
  * A message channel that prioritizes messages based on a {@link Comparator}.
  * The default comparator is based upon the message header's 'priority'.
  * 
  * @author Mark Fisher
+ * @author Iwein Fuld
  */
-public class PriorityChannel extends QueueChannel {
+public class PriorityChannel<T> extends QueueChannel<T> {
 
 	private final UpperBound upperBound;
 
@@ -42,7 +43,7 @@ public class PriorityChannel extends QueueChannel {
 	 * {@link MessageHeaders#getPriority()}.
 	 */
 	public PriorityChannel(int capacity, Comparator<Message<?>> comparator) {
-		super(new PriorityBlockingQueue<Message<?>>(11,
+		super(new PriorityBlockingQueue<Message<T>>(11,
 				(comparator != null) ? comparator : new MessagePriorityComparator()));
 		this.upperBound = new UpperBound(capacity);
 	}
@@ -75,7 +76,7 @@ public class PriorityChannel extends QueueChannel {
 
 
 	@Override
-	protected boolean doSend(Message<?> message, long timeout) {
+	protected boolean doSend(Message<? extends T> message, long timeout) {
 		if (!upperBound.tryAcquire(timeout)) {
 			return false;
 		}
@@ -83,8 +84,8 @@ public class PriorityChannel extends QueueChannel {
 	}
 
 	@Override
-	protected Message<?> doReceive(long timeout) {
-		Message<?> message = super.doReceive(timeout);
+	protected Message<T> doReceive(long timeout) {
+		Message<T> message = super.doReceive(timeout);
 		if (message != null) {
 			upperBound.release();
 			return message;
